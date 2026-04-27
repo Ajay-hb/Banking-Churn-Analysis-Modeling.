@@ -153,7 +153,7 @@ streamlit run app.py
 
 Deployed using **Streamlit Community Cloud**
 
-🔗 [https://streamlit.io/cloud](https://ajay-banking-churn-analysis.streamlit.app/)
+🔗 [https://streamlit.io/cloud]
 
 ---
 
