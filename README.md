@@ -146,11 +146,15 @@ jupyter notebook
 
 ## 🔮 Future Improvements
 Hyperparameter tuning (GridSearchCV)
+
 Class imbalance handling (SMOTE)
+
 XGBoost / LightGBM
+
 Deploy using Streamlit
 
 👨‍💻 Author
 
 Ajay Ponnuru
+
 Aspiring Data Scientist | ML Engineer
