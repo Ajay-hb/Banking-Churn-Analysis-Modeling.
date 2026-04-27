@@ -138,7 +138,7 @@ This model enables:
 
 ## 🚀 How to Run
 
-```bash
+
 git clone https://github.com/your-username/banking-churn-analysis.git
 cd banking-churn-analysis
 pip install -r requirements.txt
