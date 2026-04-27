@@ -130,7 +130,6 @@ Evaluation metrics used:
 | Metric        | Score |
 |--------------|------|
 | Accuracy      | ~0.84 |
-| ROC-AUC       | ~0.86 |
 | Precision     | High |
 | Recall        | Balanced |
 
