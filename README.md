@@ -20,10 +20,11 @@
 ## 🚀 Live Demo
 
 <p align="center">
-  <a href=<"(https://ajay-banking-churn-analysis.streamlit.app/)">
+  <a href="https://ajay-banking-churn-analysis.streamlit.app/" target="_blank">
     <img src="https://img.shields.io/badge/🚀%20Launch%20App-Click%20Here-success?style=for-the-badge"/>
   </a>
 </p>
+
 
 ---
 
