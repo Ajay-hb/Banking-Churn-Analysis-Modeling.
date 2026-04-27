@@ -4,26 +4,21 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# ------------------ CONFIG ------------------
-st.set_page_config(
-    page_title="Churn Dashboard",
-    page_icon="🏦",
-    layout="wide"
-)
+# ---------------- CONFIG ----------------
+st.set_page_config(page_title="Churn Intelligence System", layout="wide")
 
-# ------------------ LOAD ------------------
+# ---------------- LOAD ----------------
 model = joblib.load("model.pkl")
 df = pd.read_csv("Churn_Modelling.csv")
 
-# ------------------ SIDEBAR ------------------
-st.sidebar.title("📊 Navigation")
-page = st.sidebar.radio("Go to", ["Prediction", "Analytics Dashboard"])
+# ---------------- SIDEBAR ----------------
+st.sidebar.title("🚀 Churn Intelligence System")
+page = st.sidebar.radio("Navigation", ["Prediction", "Analytics", "Data Explorer"])
 
-# ------------------ PREDICTION PAGE ------------------
+# ===================== PREDICTION =====================
 if page == "Prediction":
 
     st.title("🏦 Customer Churn Prediction")
-    st.markdown("Predict churn using ML model")
 
     col1, col2, col3 = st.columns(3)
 
@@ -63,6 +58,8 @@ if page == "Prediction":
         pred = model.predict(input_data)[0]
         prob = model.predict_proba(input_data)[0][1]
 
+        st.subheader("Prediction Result")
+
         if pred == 1:
             st.error(f"⚠️ High Churn Risk ({prob:.2%})")
         else:
@@ -70,8 +67,22 @@ if page == "Prediction":
 
         st.progress(int(prob * 100))
 
-# ------------------ ANALYTICS DASHBOARD ------------------
-else:
+        # Download prediction
+        result_df = input_data.copy()
+        result_df["Prediction"] = pred
+        result_df["Probability"] = prob
+
+        csv = result_df.to_csv(index=False).encode("utf-8")
+
+        st.download_button(
+            "📥 Download Prediction",
+            data=csv,
+            file_name="prediction.csv",
+            mime="text/csv"
+        )
+
+# ===================== ANALYTICS =====================
+elif page == "Analytics":
 
     st.title("📊 Analytics Dashboard")
 
@@ -85,18 +96,7 @@ else:
     sns.boxplot(x="Exited", y="Age", data=df, ax=ax2)
     st.pyplot(fig2)
 
-    st.subheader("Active Members vs Churn")
-    fig3, ax3 = plt.subplots()
-    sns.countplot(x="IsActiveMember", hue="Exited", data=df, ax=ax3)
-    st.pyplot(fig3)
-
-    st.subheader("Correlation Heatmap")
-    fig4, ax4 = plt.subplots()
-    sns.heatmap(df.corr(numeric_only=True), ax=ax4)
-    st.pyplot(fig4)
-
-    # Feature importance
-    st.subheader("Top Feature Importance")
+    st.subheader("Feature Importance")
 
     X = df.drop(['RowNumber','CustomerId','Surname','Exited'], axis=1)
     X = pd.get_dummies(X, drop_first=True)
@@ -104,6 +104,36 @@ else:
     importances = model.feature_importances_
     feat_imp = pd.Series(importances, index=X.columns).sort_values(ascending=False)[:10]
 
-    fig5, ax5 = plt.subplots()
-    feat_imp.plot(kind='barh', ax=ax5)
-    st.pyplot(fig5)
+    fig3, ax3 = plt.subplots()
+    feat_imp.plot(kind='barh', ax=ax3)
+    st.pyplot(fig3)
+
+# ===================== DATA EXPLORER =====================
+else:
+
+    st.title("🔍 Data Explorer")
+
+    st.subheader("Filter Data")
+
+    # Filters
+    age_filter = st.slider("Age Range", int(df.Age.min()), int(df.Age.max()), (20,50))
+    balance_filter = st.slider("Balance Range", int(df.Balance.min()), int(df.Balance.max()), (0,150000))
+
+    filtered_df = df[
+        (df["Age"] >= age_filter[0]) & (df["Age"] <= age_filter[1]) &
+        (df["Balance"] >= balance_filter[0]) & (df["Balance"] <= balance_filter[1])
+    ]
+
+    st.write("Filtered Data Shape:", filtered_df.shape)
+
+    st.dataframe(filtered_df.head(20))
+
+    # Download filtered data
+    csv = filtered_df.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        "📥 Download Filtered Data",
+        data=csv,
+        file_name="filtered_data.csv",
+        mime="text/csv"
+    )
