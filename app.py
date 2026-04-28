@@ -34,8 +34,25 @@ if page == "Prediction":
         tenure = st.slider("Tenure", 0, 10, 3)
 
     with col2:
-        balance = st.slider("Balance (₹)", 0, 2500000, 50000)
-        salary = st.slider("Estimated Salary (₹)", 0, 300000, 50000)
+        # Balance Input
+        balance = st.number_input(
+            "Balance (₹)",
+            min_value=0,
+            max_value=2500000,
+            value=50000,
+            step=10000
+        )
+        st.caption(f"Entered Balance: ₹{balance:,.0f}")
+
+        # Salary Input
+        salary = st.number_input(
+            "Estimated Salary (₹)",
+            min_value=0,
+            max_value=300000,
+            value=50000,
+            step=5000
+        )
+        st.caption(f"Entered Salary: ₹{salary:,.0f}")
 
     with col3:
         num_products = st.selectbox("Products", [1,2,3,4])
