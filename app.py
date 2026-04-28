@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # ---------------- CONFIG ----------------
-st.set_page_config(page_title="Churn Intelligence System", layout="wide")
+st.set_page_config(page_title="Churn Prediction System", layout="wide")
 
 # ---------------- LOAD ----------------
 model = joblib.load("model.pkl")
@@ -13,8 +13,8 @@ df = pd.read_csv("Churn_Modelling.csv")
 
 # ---------------- HEADER ----------------
 st.markdown("""
-<h1 style='text-align: center;'>🏦 Customer Churn Intelligence System</h1>
-<p style='text-align: center;'>🚀 Predict • Analyze • Explore • Retain</p>
+<h1 style='text-align: center;'>🏦 Customer Churn Prediction System</h1>
+<p style='text-align: center;'>📊 Predict • Analyze • Improve Retention</p>
 """, unsafe_allow_html=True)
 
 # ---------------- SIDEBAR ----------------
@@ -34,8 +34,8 @@ if page == "Prediction":
         tenure = st.slider("Tenure", 0, 10, 3)
 
     with col2:
-        balance = st.number_input("Balance", 0.0, 250000.0, 50000.0)
-        salary = st.number_input("Salary", 0.0, 200000.0, 50000.0)
+        balance = st.slider("Balance (₹)", 0, 2500000, 50000)
+        salary = st.slider("Estimated Salary (₹)", 0, 300000, 50000)
 
     with col3:
         num_products = st.selectbox("Products", [1,2,3,4])
@@ -80,84 +80,47 @@ if page == "Prediction":
 
         st.progress(int(prob * 100))
 
-        # ---------------- AI INSIGHT ----------------
-        st.markdown("### 🤖 AI Insight (Personalized)")
+        # ---------------- IMPROVEMENT SUGGESTIONS ----------------
+        st.markdown("---")
+        st.subheader("📊 Key Areas to Improve (Retention Strategy)")
 
-        insights = []
+        improvements = []
 
         if is_active == "No":
-            insights.append("⚠️ Customer is inactive → strong churn driver")
+            improvements.append("Increase customer engagement (offers, notifications, app usage)")
 
         if num_products <= 1:
-            insights.append("📦 Low product usage → weak engagement")
+            improvements.append("Encourage use of additional banking products")
 
         if balance < 50000:
-            insights.append("💰 Low balance → low dependency on bank")
-
-        if age > 50:
-            insights.append("👤 Older customer → higher churn tendency")
+            improvements.append("Promote savings or investment plans to increase balance")
 
         if credit_score < 500:
-            insights.append("📉 Low credit score → dissatisfaction risk")
+            improvements.append("Offer credit improvement solutions")
+
+        if age > 50:
+            improvements.append("Provide personalized support and relationship management")
 
         if geography == "Germany":
-            insights.append("🌍 Germany region → higher churn trend")
+            improvements.append("Apply targeted retention strategies for this region")
 
-        if insights:
-            st.warning("### 🔍 Key Risk Drivers")
-            for i in insights:
-                st.write("-", i)
+        if improvements:
+            for imp in improvements:
+                st.write("•", imp)
         else:
-            st.success("✅ No major churn risk factors detected")
+            st.success("Customer profile is strong. Maintain current engagement strategy.")
 
-        # ---------------- AI SUMMARY ----------------
-        st.markdown("### 🧠 AI Summary")
-
-        summary = f"""
-        This customer has a churn probability of **{prob:.2%}**.
-
-        Key drivers:
-        """
-
-        if is_active == "No":
-            summary += "- Low engagement\n"
-        if num_products <= 1:
-            summary += "- Limited product usage\n"
-        if balance < 50000:
-            summary += "- Low financial involvement\n"
-
-        st.info(summary)
-
-        # ---------------- RETENTION ADVISOR ----------------
+        # ---------------- FEATURE IMPORTANCE ----------------
         st.markdown("---")
-        st.subheader("🧠 Retention Advisor")
+        st.subheader("📊 Top Influencing Features")
 
-        recommendations = []
+        X = df.drop(['RowNumber','CustomerId','Surname','Exited'], axis=1)
+        X = pd.get_dummies(X, drop_first=True)
 
-        if prob > 0.7:
-            st.error("🔴 High Risk Customer")
+        feat_imp = pd.Series(model.feature_importances_, index=X.columns).sort_values(ascending=False)
 
-            if is_active == "No":
-                recommendations.append("Re-engage with personalized offers")
-
-            if num_products <= 1:
-                recommendations.append("Recommend additional products")
-
-            if balance < 50000:
-                recommendations.append("Provide financial incentives")
-
-        elif prob > 0.4:
-            st.warning("🟡 Medium Risk Customer")
-            recommendations.append("Send targeted campaigns")
-            recommendations.append("Offer loyalty rewards")
-
-        else:
-            st.success("🟢 Low Risk Customer")
-            recommendations.append("Maintain engagement")
-            recommendations.append("Monitor behavior")
-
-        for rec in recommendations:
-            st.write("-", rec)
+        for f in feat_imp.head(5).index:
+            st.write("•", f)
 
         # ---------------- DOWNLOAD ----------------
         result_df = input_data.copy()
@@ -169,25 +132,6 @@ if page == "Prediction":
             result_df.to_csv(index=False),
             file_name="prediction.csv"
         )
-
-        # ---------------- AI CHAT ----------------
-        st.markdown("---")
-        st.subheader("💬 AI Assistant")
-
-        query = st.text_input("Ask about this customer")
-
-        def ai_response(q):
-            if "why" in q.lower():
-                return "Churn risk is mainly due to engagement, product usage, and financial activity."
-            elif "reduce" in q.lower():
-                return "Improve engagement, recommend products, and offer incentives."
-            elif "probability" in q.lower():
-                return f"Churn probability is {prob:.2%}"
-            else:
-                return "Try: Why churn? How to reduce risk?"
-
-        if query:
-            st.info(ai_response(query))
 
 # ===================== ANALYTICS =====================
 elif page == "Analytics":
