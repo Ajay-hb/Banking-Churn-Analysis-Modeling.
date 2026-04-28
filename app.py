@@ -11,16 +11,14 @@ st.set_page_config(page_title="Churn Intelligence System", layout="wide")
 model = joblib.load("model.pkl")
 df = pd.read_csv("Churn_Modelling.csv")
 
-# ---------------- BANNER ----------------
-st.image("images/banner.png", use_container_width=True)
-
+# ---------------- HEADER ----------------
 st.markdown("""
 <h1 style='text-align: center;'>🏦 Customer Churn Intelligence System</h1>
 <p style='text-align: center;'>🚀 Predict • Analyze • Explore • Retain</p>
 """, unsafe_allow_html=True)
 
 # ---------------- SIDEBAR ----------------
-st.sidebar.title("🚀 Navigation")
+st.sidebar.title("📊 Navigation")
 page = st.sidebar.radio("Go to", ["Prediction", "Analytics", "Data Explorer"])
 
 # ===================== PREDICTION =====================
@@ -47,7 +45,7 @@ if page == "Prediction":
     geography = st.selectbox("Geography", ["France","Germany","Spain"])
     gender = st.selectbox("Gender", ["Male","Female"])
 
-    # Prepare input
+    # Input dataframe
     input_data = pd.DataFrame({
         'CreditScore':[credit_score],
         'Age':[age],
@@ -88,15 +86,15 @@ if page == "Prediction":
         st.info(f"""
         This customer has a churn probability of **{prob:.2%}**.
 
-        Key influencing factors may include:
-        - Engagement level
+        Key influencing factors:
+        - Customer engagement
         - Product usage
         - Financial activity
         """)
 
         # ---------------- RETENTION ADVISOR ----------------
         st.markdown("---")
-        st.subheader("🧠 AI Retention Advisor")
+        st.subheader("🧠 Retention Advisor")
 
         recommendations = []
 
@@ -104,26 +102,26 @@ if page == "Prediction":
             st.error("🔴 High Risk Customer")
 
             if is_active == "No":
-                recommendations.append("🚨 Re-engage with personalized offers")
+                recommendations.append("Re-engage with personalized offers")
 
             if num_products <= 1:
-                recommendations.append("📦 Recommend additional banking products")
+                recommendations.append("Recommend additional banking products")
 
             if balance < 50000:
-                recommendations.append("💰 Provide financial incentives")
+                recommendations.append("Provide financial incentives")
 
             if age > 50:
-                recommendations.append("👤 Offer dedicated support")
+                recommendations.append("Offer dedicated support")
 
         elif prob > 0.4:
             st.warning("🟡 Medium Risk Customer")
-            recommendations.append("📧 Send targeted campaigns")
-            recommendations.append("🎁 Offer loyalty rewards")
+            recommendations.append("Send targeted campaigns")
+            recommendations.append("Offer loyalty rewards")
 
         else:
             st.success("🟢 Low Risk Customer")
-            recommendations.append("👍 Maintain engagement")
-            recommendations.append("📊 Monitor behavior")
+            recommendations.append("Maintain engagement")
+            recommendations.append("Monitor behavior")
 
         for rec in recommendations:
             st.write("-", rec)
@@ -143,17 +141,17 @@ if page == "Prediction":
         st.markdown("---")
         st.subheader("💬 AI Assistant")
 
-        query = st.text_input("Ask something about this customer")
+        query = st.text_input("Ask about this customer")
 
         def ai_response(q):
             if "why" in q.lower():
-                return "Churn risk is influenced by engagement, product usage, and financial activity."
+                return "Churn risk is influenced by engagement, product usage, and financial behavior."
             elif "reduce" in q.lower():
-                return "Increase engagement, offer products, and provide incentives."
+                return "Improve engagement, offer more products, and provide incentives."
             elif "probability" in q.lower():
                 return f"Churn probability is {prob:.2%}"
             else:
-                return "Try asking: Why churn? How to reduce?"
+                return "Try: Why churn? How to reduce risk?"
 
         if query:
             st.info(ai_response(query))
@@ -207,7 +205,5 @@ else:
     )
 
 # ---------------- FOOTER ----------------
-st.markdown("""
----
-<p style='text-align: center;'>Built with ❤️ using Machine Learning & Streamlit</p>
-""", unsafe_allow_html=True)
+st.markdown("---")
+st.caption("Built using Machine Learning & Streamlit")
