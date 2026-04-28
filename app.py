@@ -81,16 +81,52 @@ if page == "Prediction":
         st.progress(int(prob * 100))
 
         # ---------------- AI INSIGHT ----------------
-        st.markdown("### 🤖 AI Insight")
+        st.markdown("### 🤖 AI Insight (Personalized)")
 
-        st.info(f"""
+        insights = []
+
+        if is_active == "No":
+            insights.append("⚠️ Customer is inactive → strong churn driver")
+
+        if num_products <= 1:
+            insights.append("📦 Low product usage → weak engagement")
+
+        if balance < 50000:
+            insights.append("💰 Low balance → low dependency on bank")
+
+        if age > 50:
+            insights.append("👤 Older customer → higher churn tendency")
+
+        if credit_score < 500:
+            insights.append("📉 Low credit score → dissatisfaction risk")
+
+        if geography == "Germany":
+            insights.append("🌍 Germany region → higher churn trend")
+
+        if insights:
+            st.warning("### 🔍 Key Risk Drivers")
+            for i in insights:
+                st.write("-", i)
+        else:
+            st.success("✅ No major churn risk factors detected")
+
+        # ---------------- AI SUMMARY ----------------
+        st.markdown("### 🧠 AI Summary")
+
+        summary = f"""
         This customer has a churn probability of **{prob:.2%}**.
 
-        Key influencing factors:
-        - Customer engagement
-        - Product usage
-        - Financial activity
-        """)
+        Key drivers:
+        """
+
+        if is_active == "No":
+            summary += "- Low engagement\n"
+        if num_products <= 1:
+            summary += "- Limited product usage\n"
+        if balance < 50000:
+            summary += "- Low financial involvement\n"
+
+        st.info(summary)
 
         # ---------------- RETENTION ADVISOR ----------------
         st.markdown("---")
@@ -105,13 +141,10 @@ if page == "Prediction":
                 recommendations.append("Re-engage with personalized offers")
 
             if num_products <= 1:
-                recommendations.append("Recommend additional banking products")
+                recommendations.append("Recommend additional products")
 
             if balance < 50000:
                 recommendations.append("Provide financial incentives")
-
-            if age > 50:
-                recommendations.append("Offer dedicated support")
 
         elif prob > 0.4:
             st.warning("🟡 Medium Risk Customer")
@@ -145,9 +178,9 @@ if page == "Prediction":
 
         def ai_response(q):
             if "why" in q.lower():
-                return "Churn risk is influenced by engagement, product usage, and financial behavior."
+                return "Churn risk is mainly due to engagement, product usage, and financial activity."
             elif "reduce" in q.lower():
-                return "Improve engagement, offer more products, and provide incentives."
+                return "Improve engagement, recommend products, and offer incentives."
             elif "probability" in q.lower():
                 return f"Churn probability is {prob:.2%}"
             else:
