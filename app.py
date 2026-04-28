@@ -11,14 +11,22 @@ st.set_page_config(page_title="Churn Intelligence System", layout="wide")
 model = joblib.load("model.pkl")
 df = pd.read_csv("Churn_Modelling.csv")
 
+# ---------------- BANNER ----------------
+st.image("images/banner.png", use_container_width=True)
+
+st.markdown("""
+<h1 style='text-align: center;'>🏦 Customer Churn Intelligence System</h1>
+<p style='text-align: center;'>🚀 Predict • Analyze • Explore • Retain</p>
+""", unsafe_allow_html=True)
+
 # ---------------- SIDEBAR ----------------
-st.sidebar.title("🚀 Churn Intelligence System")
-page = st.sidebar.radio("Navigation", ["Prediction", "Analytics", "Data Explorer"])
+st.sidebar.title("🚀 Navigation")
+page = st.sidebar.radio("Go to", ["Prediction", "Analytics", "Data Explorer"])
 
 # ===================== PREDICTION =====================
 if page == "Prediction":
 
-    st.title("🏦 Customer Churn Prediction")
+    st.subheader("🔮 Predict Customer Churn")
 
     col1, col2, col3 = st.columns(3)
 
@@ -39,6 +47,7 @@ if page == "Prediction":
     geography = st.selectbox("Geography", ["France","Germany","Spain"])
     gender = st.selectbox("Gender", ["Male","Female"])
 
+    # Prepare input
     input_data = pd.DataFrame({
         'CreditScore':[credit_score],
         'Age':[age],
@@ -53,33 +62,101 @@ if page == "Prediction":
         'Gender_Male':[1 if gender=="Male" else 0]
     })
 
-    if st.button("🚀 Predict"):
+    if st.button("🚀 Predict Churn"):
 
         pred = model.predict(input_data)[0]
         prob = model.predict_proba(input_data)[0][1]
 
-        st.subheader("Prediction Result")
+        st.subheader("📈 Prediction Result")
 
-        if pred == 1:
-            st.error(f"⚠️ High Churn Risk ({prob:.2%})")
-        else:
-            st.success(f"✅ Likely to Stay ({1-prob:.2%})")
+        col4, col5 = st.columns(2)
+
+        with col4:
+            if pred == 1:
+                st.error("⚠️ High Churn Risk")
+            else:
+                st.success("✅ Customer Likely to Stay")
+
+        with col5:
+            st.metric("Churn Probability", f"{prob:.2%}")
 
         st.progress(int(prob * 100))
 
-        # Download prediction
+        # ---------------- AI INSIGHT ----------------
+        st.markdown("### 🤖 AI Insight")
+
+        st.info(f"""
+        This customer has a churn probability of **{prob:.2%}**.
+
+        Key influencing factors may include:
+        - Engagement level
+        - Product usage
+        - Financial activity
+        """)
+
+        # ---------------- RETENTION ADVISOR ----------------
+        st.markdown("---")
+        st.subheader("🧠 AI Retention Advisor")
+
+        recommendations = []
+
+        if prob > 0.7:
+            st.error("🔴 High Risk Customer")
+
+            if is_active == "No":
+                recommendations.append("🚨 Re-engage with personalized offers")
+
+            if num_products <= 1:
+                recommendations.append("📦 Recommend additional banking products")
+
+            if balance < 50000:
+                recommendations.append("💰 Provide financial incentives")
+
+            if age > 50:
+                recommendations.append("👤 Offer dedicated support")
+
+        elif prob > 0.4:
+            st.warning("🟡 Medium Risk Customer")
+            recommendations.append("📧 Send targeted campaigns")
+            recommendations.append("🎁 Offer loyalty rewards")
+
+        else:
+            st.success("🟢 Low Risk Customer")
+            recommendations.append("👍 Maintain engagement")
+            recommendations.append("📊 Monitor behavior")
+
+        for rec in recommendations:
+            st.write("-", rec)
+
+        # ---------------- DOWNLOAD ----------------
         result_df = input_data.copy()
         result_df["Prediction"] = pred
         result_df["Probability"] = prob
 
-        csv = result_df.to_csv(index=False).encode("utf-8")
-
         st.download_button(
             "📥 Download Prediction",
-            data=csv,
-            file_name="prediction.csv",
-            mime="text/csv"
+            result_df.to_csv(index=False),
+            file_name="prediction.csv"
         )
+
+        # ---------------- AI CHAT ----------------
+        st.markdown("---")
+        st.subheader("💬 AI Assistant")
+
+        query = st.text_input("Ask something about this customer")
+
+        def ai_response(q):
+            if "why" in q.lower():
+                return "Churn risk is influenced by engagement, product usage, and financial activity."
+            elif "reduce" in q.lower():
+                return "Increase engagement, offer products, and provide incentives."
+            elif "probability" in q.lower():
+                return f"Churn probability is {prob:.2%}"
+            else:
+                return "Try asking: Why churn? How to reduce?"
+
+        if query:
+            st.info(ai_response(query))
 
 # ===================== ANALYTICS =====================
 elif page == "Analytics":
@@ -101,8 +178,7 @@ elif page == "Analytics":
     X = df.drop(['RowNumber','CustomerId','Surname','Exited'], axis=1)
     X = pd.get_dummies(X, drop_first=True)
 
-    importances = model.feature_importances_
-    feat_imp = pd.Series(importances, index=X.columns).sort_values(ascending=False)[:10]
+    feat_imp = pd.Series(model.feature_importances_, index=X.columns).sort_values(ascending=False)[:10]
 
     fig3, ax3 = plt.subplots()
     feat_imp.plot(kind='barh', ax=ax3)
@@ -113,27 +189,25 @@ else:
 
     st.title("🔍 Data Explorer")
 
-    st.subheader("Filter Data")
-
-    # Filters
-    age_filter = st.slider("Age Range", int(df.Age.min()), int(df.Age.max()), (20,50))
-    balance_filter = st.slider("Balance Range", int(df.Balance.min()), int(df.Balance.max()), (0,150000))
+    age_range = st.slider("Age Range", int(df.Age.min()), int(df.Age.max()), (20,50))
+    balance_range = st.slider("Balance Range", int(df.Balance.min()), int(df.Balance.max()), (0,150000))
 
     filtered_df = df[
-        (df["Age"] >= age_filter[0]) & (df["Age"] <= age_filter[1]) &
-        (df["Balance"] >= balance_filter[0]) & (df["Balance"] <= balance_filter[1])
+        (df["Age"] >= age_range[0]) & (df["Age"] <= age_range[1]) &
+        (df["Balance"] >= balance_range[0]) & (df["Balance"] <= balance_range[1])
     ]
 
-    st.write("Filtered Data Shape:", filtered_df.shape)
-
+    st.write("Filtered Data:", filtered_df.shape)
     st.dataframe(filtered_df.head(20))
-
-    # Download filtered data
-    csv = filtered_df.to_csv(index=False).encode("utf-8")
 
     st.download_button(
         "📥 Download Filtered Data",
-        data=csv,
-        file_name="filtered_data.csv",
-        mime="text/csv"
+        filtered_df.to_csv(index=False),
+        file_name="filtered_data.csv"
     )
+
+# ---------------- FOOTER ----------------
+st.markdown("""
+---
+<p style='text-align: center;'>Built with ❤️ using Machine Learning & Streamlit</p>
+""", unsafe_allow_html=True)
