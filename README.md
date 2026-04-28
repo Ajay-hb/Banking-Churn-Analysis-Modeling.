@@ -1,3 +1,6 @@
+![Churn Banner](<img width="1536" height="1024" alt="WhatsApp Image 2026-04-28 at 10 45 03 AM" src="https://github.com/user-attachments/assets/34d555d2-dec1-4875-846a-1e4b83f40739" />
+)
+
 # 🏦 Customer Churn Intelligence System  
 ### 🚀 End-to-End Machine Learning Dashboard for Predicting Customer Churn
 
@@ -17,14 +20,20 @@
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Live Demo & Code
 
 <p align="center">
   <a href="https://ajay-banking-churn-analysis.streamlit.app/" target="_blank">
-    <img src="https://img.shields.io/badge/🚀%20Launch%20App-Click%20Here-success?style=for-the-badge"/>
+    <img src="https://img.shields.io/badge/🚀%20Live%20App-Open-success?style=for-the-badge"/>
+  </a>
+  <a href="https://github.com/Ajay-hb/Banking-Churn-Analysis-Modeling." target="_blank">
+    <img src="https://img.shields.io/badge/📂%20View%20Code-GitHub-black?style=for-the-badge"/>
   </a>
 </p>
 
+---
+
+> 💡 **This project demonstrates a complete ML pipeline with real-time prediction, analytics dashboard, and interactive data exploration.**
 
 ---
 
@@ -78,7 +87,7 @@ to enable **data-driven decision-making and customer retention strategies**.
    ↓  
 🤖 Model Training (Random Forest)  
    ↓  
-📊 Evaluation  
+📊 Model Evaluation  
    ↓  
 🚀 Deployment (Streamlit App)
 ```
@@ -133,6 +142,8 @@ Banking-Churn-Analysis/
 │── Churn_Modelling.csv
 │── requirements.txt
 │── README.md
+│── images/
+│   └── banner.png
 ```
 
 ---
@@ -140,7 +151,7 @@ Banking-Churn-Analysis/
 ## 🚀 How to Run Locally
 
 ```bash
-git clone https://github.com/your-username/banking-churn-analysis.git
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
 cd banking-churn-analysis
 
 pip install -r requirements.txt
@@ -151,9 +162,9 @@ streamlit run app.py
 
 ## 🌐 Deployment
 
-Deployed using **Streamlit Community Cloud**
+Deployed using **Streamlit Community Cloud**  
 
-🔗 [https://streamlit.io/cloud]
+👉 https://streamlit.io/cloud  
 
 ---
 
@@ -180,7 +191,7 @@ This system enables organizations to:
 ## 👨‍💻 Author
 
 **Ajay Ponnuru**  
-🎯 Aspiring Data Scientist | ML Enthusiast  
+🎯 Aspiring Data Scientist | Machine Learning Enthusiast  
 
 ---
 
