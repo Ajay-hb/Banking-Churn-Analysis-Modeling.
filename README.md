@@ -1,4 +1,4 @@
-![Churn Banner](<img width="1536" height="1024" alt="WhatsApp Image 2026-04-28 at 10 45 03 AM" src="https://github.com/user-attachments/assets/34d555d2-dec1-4875-846a-1e4b83f40739" />
+(<img width="1536" height="1024" alt="WhatsApp Image 2026-04-28 at 10 45 03 AM" src="https://github.com/user-attachments/assets/34d555d2-dec1-4875-846a-1e4b83f40739" />
 )
 
 # 🏦 Customer Churn Intelligence System  
